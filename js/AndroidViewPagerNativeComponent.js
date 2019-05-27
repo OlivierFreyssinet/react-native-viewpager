@@ -38,6 +38,15 @@ type PageSelectedEvent = SyntheticEvent<
   |}>,
 >;
 
+type ScrollEvent = SyntheticEvent<
+  $ReadOnly<{|
+    scrollX: number,
+    scrollY: number,
+    oldScrollX: number,
+    oldScrollY: number,
+  |},
+>;
+
 type NativeProps = $ReadOnly<{|
   /**
    * Index of initial page that should be selected. Use `setPage` method to
@@ -75,6 +84,18 @@ type NativeProps = $ReadOnly<{|
   onPageSelected?: ?(e: PageSelectedEvent) => void,
 
   /**
+   * This callback will be called every frame during scrolling.
+   * The React prop `scrollListenerEnabled` needs to be set to `true` for this callback
+   * to be invoked when the ViewPager scrolls.
+   * The `event.nativeEvent` object for this callback will carry following data:
+   *  - scrollX: the new horizontal scroll position
+   *  - oldScrollX: the horizontal scroll position of the previous frame
+   *  - scrollY: the new vertical scroll position
+   *  - oldScrollY: the vertical scroll position of the previous frame
+   */
+  onScroll?: ?(e: ScrollEvent) => void,
+
+  /**
    * Blank space to show between pages. This is only visible while scrolling, pages are still
    * edge-to-edge.
    */
@@ -99,6 +120,16 @@ type NativeProps = $ReadOnly<{|
    * The default value is true.
    */
   scrollEnabled?: ?boolean,
+
+
+  /**
+   * When true, the callback specified at the onScroll React prop will be called
+   * at every frame during scrolling
+   * We use this for performance reasons: if you're not interested in listening
+   * to onScroll events, the native bridge will not be flooded with native onScroll
+   * events.
+   */
+  scrollListenerEnabled?: ?boolean,
 
   children?: Node,
 

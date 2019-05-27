@@ -56,7 +56,8 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
     return MapBuilder.of(
         PageScrollEvent.EVENT_NAME, MapBuilder.of("registrationName", "onPageScroll"),
         PageScrollStateChangedEvent.EVENT_NAME, MapBuilder.of("registrationName", "onPageScrollStateChanged"),
-        PageSelectedEvent.EVENT_NAME, MapBuilder.of("registrationName", "onPageSelected"));
+        PageSelectedEvent.EVENT_NAME, MapBuilder.of("registrationName", "onPageSelected"),
+        ScrollEvent.EVENT_NAME, MapBuilder.of("registrationName", "onScroll"));
   }
 
   @Override
@@ -120,5 +121,10 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
   @ReactProp(name = "peekEnabled", defaultBoolean = false)
   public void setPeekEnabled(ReactViewPager pager, boolean peekEnabled) {
     pager.setClipToPadding(!peekEnabled);
+  }
+
+  @ReactProp(name = "onScrollListenerEnabled", defaultBoolean = false)
+  public void setOnScrollListenerEnable(ReactViewPager pager, boolean onScrollListenerEnabled) {
+    pager.setOnScrollListenerEnabled(onScrollListenerEnabled);
   }
 }

@@ -123,8 +123,8 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
     pager.setClipToPadding(!peekEnabled);
   }
 
-  @ReactProp(name = "onScrollListenerEnabled", defaultBoolean = false)
-  public void setOnScrollListenerEnable(ReactViewPager pager, boolean onScrollListenerEnabled) {
-    pager.setOnScrollListenerEnabled(onScrollListenerEnabled);
+  @ReactProp(name = "scrollListenerEnabled", defaultBoolean = false)
+  public void setScrollListenerEnable(ReactViewPager pager, boolean onScrollListenerEnabled) {
+    pager.setScrollListenerEnabled(onScrollListenerEnabled);
   }
 }

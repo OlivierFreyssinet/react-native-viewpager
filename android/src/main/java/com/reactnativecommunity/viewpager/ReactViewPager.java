@@ -142,14 +142,14 @@ public class ReactViewPager extends ViewPager {
     }
   }
 
-  public void setOnScrollListenerEnabled(Boolean onScrollListenerEnabled) {
-        mOnScrollListenerEnabled = onScrollListenerEnabled;
+  public void setScrollListenerEnabled(Boolean scrollListenerEnabled) {
+        mScrollListenerEnabled = scrollListenerEnabled;
   }
 
   private class OnScrollChangeListener implements View.OnScrollChangeListener {
       @Override
       public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-          if (mOnScrollListenerEnabled) {
+          if (mScrollListenerEnabled) {
               mEventDispatcher.dispatchEvent(
                       new ScrollEvent(getId(), scrollX, scrollY, oldScrollX, oldScrollY)
               );
@@ -160,7 +160,7 @@ public class ReactViewPager extends ViewPager {
   private final EventDispatcher mEventDispatcher;
   private boolean mIsCurrentItemFromJs;
   private boolean mScrollEnabled = true;
-  private boolean mOnScrollListenerEnabled = false;
+  private boolean mScrollListenerEnabled = false;
 
 
     public ReactViewPager(ReactContext reactContext) {

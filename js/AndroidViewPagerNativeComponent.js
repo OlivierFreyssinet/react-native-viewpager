@@ -44,7 +44,7 @@ type ScrollEvent = SyntheticEvent<
     scrollY: number,
     oldScrollX: number,
     oldScrollY: number,
-  |},
+  |}>,
 >;
 
 type NativeProps = $ReadOnly<{|

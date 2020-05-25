@@ -46,6 +46,12 @@ type NativeProps = $ReadOnly<{|
   initialPage?: ?number,
 
   /**
+   * Index of the page that should be scrolled to when the home button/gesture
+   * is pressed
+   */
+  homePage?: ?number,
+
+  /**
    * Executed when transitioning between pages (ether because of animation for
    * the requested page change or when user is swiping/dragging between pages)
    * The `event.nativeEvent` object for this callback will carry following data:

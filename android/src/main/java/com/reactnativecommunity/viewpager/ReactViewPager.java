@@ -28,6 +28,7 @@ import java.util.List;
  * to add children nodes according to react views hierarchy.
  */
 public class ReactViewPager extends ViewPager {
+  private static final String TAG = "ReactViewPager";
 
   private class Adapter extends PagerAdapter {
 
@@ -250,6 +251,15 @@ public class ReactViewPager extends ViewPager {
     mScrollEnabled = scrollEnabled;
   }
 
+  private int homePage = -1;
+  public void setHomePage(int homePage) {
+    this.homePage = homePage;
+  }
+
+  public void goToHomePage() {
+    if (homePage == -1) return;
+    setCurrentItem(homePage, true);
+  }
 
   @Override
   protected void onAttachedToWindow() {

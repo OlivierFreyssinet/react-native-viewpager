@@ -18,6 +18,7 @@ import com.facebook.react.common.ReactConstants;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.NativeGestureUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,15 +142,33 @@ public class ReactViewPager extends ViewPager {
     }
   }
 
+  public void setScrollListenerEnabled(Boolean scrollListenerEnabled) {
+        mScrollListenerEnabled = scrollListenerEnabled;
+  }
+
+  private class OnScrollChangeListener implements View.OnScrollChangeListener {
+      @Override
+      public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+          if (mScrollListenerEnabled) {
+              mEventDispatcher.dispatchEvent(
+                      new ScrollEvent(getId(), scrollX, scrollY, oldScrollX, oldScrollY)
+              );
+          }
+      }
+  }
+
   private final EventDispatcher mEventDispatcher;
   private boolean mIsCurrentItemFromJs;
   private boolean mScrollEnabled = true;
+  private boolean mScrollListenerEnabled = false;
 
-  public ReactViewPager(ReactContext reactContext) {
+
+    public ReactViewPager(ReactContext reactContext) {
     super(reactContext);
     mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
     mIsCurrentItemFromJs = false;
     setOnPageChangeListener(new PageChangeListener());
+    setOnScrollChangeListener(new OnScrollChangeListener());
     setAdapter(new Adapter());
   }
 

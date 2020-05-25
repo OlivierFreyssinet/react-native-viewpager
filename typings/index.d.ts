@@ -18,6 +18,13 @@ export interface ViewPagerAndroidProps extends ReactNative.ViewProps {
     initialPage?: number;
 
     /**
+     * Index of the page that should be scrolled to when the home button/gesture
+     * is pressed
+     */
+    homePage?: ?number;
+
+
+    /**
      * When false, the content does not scroll.
      * The default value is true.
      */

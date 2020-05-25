@@ -12,6 +12,7 @@ import java.util.Map;
 import android.view.View;
 
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.PixelUtil;
@@ -31,6 +32,8 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
   private static final int COMMAND_SET_PAGE = 1;
   private static final int COMMAND_SET_PAGE_WITHOUT_ANIMATION = 2;
 
+  private static HomeWatcher mHomeWatcher;
+
   @Override
   public String getName() {
     return REACT_CLASS;
@@ -38,7 +41,16 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
 
   @Override
   protected ReactViewPager createViewInstance(ThemedReactContext reactContext) {
-    return new ReactViewPager(reactContext);
+    final ReactViewPager viewPager = new ReactViewPager(reactContext);
+    mHomeWatcher = new HomeWatcher(reactContext);
+    mHomeWatcher.setOnHomePressedListener(new HomeWatcher.OnHomePressedListener() {
+      @Override
+      public void onHomePressed() {
+        viewPager.goToHomePage();
+      }
+    });
+    mHomeWatcher.startWatch();
+    return viewPager;
   }
 
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
@@ -110,6 +122,11 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
   @Override
   public void removeViewAt(ReactViewPager parent, int index) {
     parent.removeViewFromAdapter(index);
+  }
+
+  @ReactProp(name = "homePage", defaultInt = -1)
+  public void setHomePage(ReactViewPager pager, int homePage) {
+    pager.setHomePage(homePage);
   }
 
   @ReactProp(name = "pageMargin", defaultFloat = 0)

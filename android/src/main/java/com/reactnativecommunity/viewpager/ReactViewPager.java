@@ -9,6 +9,7 @@ package com.reactnativecommunity.viewpager;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,10 @@ public class ReactViewPager extends ViewPager {
 
     @Override
     public void onPageSelected(int position) {
+      Log.wtf("ReactViewPager", "onPageScrolled: " + position);
+      if (position == 0) setAllowedSwipeDirection(SwipeDirection.right);
+      else if (position == getViewCountInAdapter() - 1) setAllowedSwipeDirection(SwipeDirection.left);
+      else setAllowedSwipeDirection(SwipeDirection.all);
       if (!mIsCurrentItemFromJs) {
         mEventDispatcher.dispatchEvent(
             new PageSelectedEvent(getId(), position));
@@ -144,9 +149,12 @@ public class ReactViewPager extends ViewPager {
   private final EventDispatcher mEventDispatcher;
   private boolean mIsCurrentItemFromJs;
   private boolean mScrollEnabled = true;
+  private float initialXValue;
+  private SwipeDirection direction;
 
   public ReactViewPager(ReactContext reactContext) {
     super(reactContext);
+    this.direction = SwipeDirection.all;
     mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
     mIsCurrentItemFromJs = false;
     setOnPageChangeListener(new PageChangeListener());
@@ -160,10 +168,10 @@ public class ReactViewPager extends ViewPager {
 
   @Override
   public boolean onInterceptTouchEvent(MotionEvent ev) {
-    if (!mScrollEnabled) {
+    if (!isSwipeAllowed(ev)) {
+      //Log.wtf("ReactViewPager", "onInterceptTouchEvent swipe not allowed");
       return false;
-    }
-
+    };
     try {
       if (super.onInterceptTouchEvent(ev)) {
         NativeGestureUtil.notifyNativeGestureStarted(this, ev);
@@ -181,9 +189,10 @@ public class ReactViewPager extends ViewPager {
 
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
-    if (!mScrollEnabled) {
+    if (!isSwipeAllowed(ev)) {
+      //Log.wtf("ReactViewPager", "onTouchEvent swipe not allowed");
       return false;
-    }
+    };
 
     try {
       return super.onTouchEvent(ev);
@@ -195,6 +204,40 @@ public class ReactViewPager extends ViewPager {
     }
 
     return false;
+  }
+
+  private boolean isSwipeAllowed(MotionEvent event) {
+    if (!mScrollEnabled) return false;
+    if(this.direction == SwipeDirection.all) return true;
+
+    if(direction == SwipeDirection.none )//disable any swipe
+      return false;
+
+    if(event.getAction()==MotionEvent.ACTION_DOWN) {
+      initialXValue = event.getX();
+      return true;
+    }
+
+    if(event.getAction()==MotionEvent.ACTION_MOVE) {
+      try {
+        float diffX = event.getX() - initialXValue;
+        if (diffX > 0 && direction == SwipeDirection.right ) {
+          // swipe from left to right detected
+          return false;
+        }else if (diffX < 0 && direction == SwipeDirection.left ) {
+          // swipe from right to left detected
+          return false;
+        }
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+    }
+
+    return true;
+  }
+
+  public void setAllowedSwipeDirection(SwipeDirection direction) {
+    this.direction = direction;
   }
 
   public void setCurrentItemFromJs(int item, boolean animated) {

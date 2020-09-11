@@ -31,9 +31,13 @@ public class HomeWatcher {
 
     public void stopWatch() {
         if (mRecevier != null) {
-            mContext.unregisterReceiver(mRecevier);
+            try {
+                mContext.unregisterReceiver(mRecevier);
+            } catch (Exception e) {}
         }
     }
+
+
 
     public interface OnHomePressedListener {
         public void onHomePressed();

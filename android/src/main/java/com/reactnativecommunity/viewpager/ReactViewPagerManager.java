@@ -53,6 +53,12 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
     return viewPager;
   }
 
+  @Override
+  public void onDropViewInstance(ReactViewPager view) {
+    if (mHomeWatcher != null) mHomeWatcher.stopWatch();
+    super.onDropViewInstance(view);
+  }
+
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
   public void setScrollEnabled(ReactViewPager viewPager, boolean value) {
     viewPager.setScrollEnabled(value);
